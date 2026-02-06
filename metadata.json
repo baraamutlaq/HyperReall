@@ -1,0 +1,5 @@
+{
+  "name": "Feel Before You Buy",
+  "description": "An interactive 3D e-commerce marketplace powered by Gemini 3 Pro. Sellers upload 2D images which are analyzed and converted into interactive 3D product visualizations.",
+  "requestFramePermissions": []
+}
