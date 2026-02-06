@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import SellerDashboard from './components/SellerDashboard';
 import BuyerCatalog from './components/BuyerCatalog';
 import ProductDetail from './components/ProductDetail';
+  import ErrorBoundary from './components/ErrorBoundary';
 import { Product, User, UserRole, CartItem } from './types';
 import { v4 as uuidv4 } from 'uuid';
 import { Check } from 'lucide-react';
@@ -32,6 +33,7 @@ const INITIAL_PRODUCTS: Product[] = [
     title: 'Vintage Leather Case',
     description: 'Handcrafted leather storage box. Rustic charm with durable construction.',
     price: 85.00,
+        <ErrorBoundary>
     category: 'Accessories',
     images: ['https://images.unsplash.com/photo-1520013573795-385751946616?auto=format&fit=crop&q=80&w=800'],
     modelData: {
@@ -70,6 +72,8 @@ const App: React.FC = () => {
   });
   
   const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
+        </div>
+        </ErrorBoundary>
   const [cart, setCart] = useState<CartItem[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [snackbar, setSnackbar] = useState<string | null>(null);

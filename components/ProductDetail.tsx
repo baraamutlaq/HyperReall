@@ -1,6 +1,7 @@
 import React from 'react';
 import { Product } from '../types';
-import ThreeViewer from './ThreeViewer';
+import React, { Suspense } from 'react';
+const ThreeViewer = React.lazy(() => import('./ThreeViewer'));
 import { ArrowLeft, ShoppingCart, Star, ShieldCheck, Truck } from 'lucide-react';
 
 interface ProductDetailProps {
@@ -23,11 +24,13 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, onAddToC
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-[calc(100vh-160px)] min-h-[600px]">
         {/* 3D Viewer Section - Takes up 2/3rds */}
         <div className="lg:col-span-2 bg-gray-900 rounded-3xl overflow-hidden shadow-2xl relative">
-          <ThreeViewer 
-            shape={product.modelData.shape} 
-            textureImage={product.modelData.textureMap}
-            objData={product.modelData.objData}
-          />
+          <Suspense fallback={<div className="w-full h-full flex items-center justify-center text-white">Loading 3D viewer...</div>}>
+            <ThreeViewer 
+              shape={product.modelData.shape} 
+              textureImage={product.modelData.textureMap}
+              objData={product.modelData.objData}
+            />
+          </Suspense>
           <div className="absolute top-6 left-6 pointer-events-none">
              <h1 className="text-3xl font-bold text-white drop-shadow-md">{product.title}</h1>
              <p className="text-white/80 text-sm mt-1 max-w-md drop-shadow-md">{product.category}</p>
