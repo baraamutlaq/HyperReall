@@ -33,7 +33,6 @@ const INITIAL_PRODUCTS: Product[] = [
     title: 'Vintage Leather Case',
     description: 'Handcrafted leather storage box. Rustic charm with durable construction.',
     price: 85.00,
-        <ErrorBoundary>
     category: 'Accessories',
     images: ['https://images.unsplash.com/photo-1520013573795-385751946616?auto=format&fit=crop&q=80&w=800'],
     modelData: {
@@ -72,8 +71,6 @@ const App: React.FC = () => {
   });
   
   const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
-        </div>
-        </ErrorBoundary>
   const [cart, setCart] = useState<CartItem[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [snackbar, setSnackbar] = useState<string | null>(null);

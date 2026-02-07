@@ -1,9 +1,19 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { AIAnalysisResult } from "../types";
 
-// Initialize the Gemini client
-// Note: In a real production app, ensure this is handled securely.
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Initialize the Gemini client safely
+let ai: GoogleGenAI | null = null;
+const apiKey = process.env.API_KEY;
+
+if (apiKey) {
+  try {
+    ai = new GoogleGenAI({ apiKey });
+  } catch (error) {
+    console.warn("Failed to initialize Gemini AI client:", error);
+  }
+} else {
+  console.warn("Gemini API Key is missing. AI features will be disabled.");
+}
 
 /**
  * Encodes a File object to a Base64 string.
@@ -28,8 +38,12 @@ export const fileToGenerativePart = async (file: File): Promise<string> => {
  */
 export const generate3DModelData = async (imageBase64: string, mimeType: string): Promise<AIAnalysisResult> => {
   try {
+    if (!ai) {
+      throw new Error("Gemini API Key is not configured.");
+    }
+
     // Switch to Flash for better rate limits and lower latency
-    const model = "gemini-3-flash-preview"; 
+    const model = "gemini-3-flash-preview";
 
     const systemInstruction = `
       You are an expert 3D modeling assistant.
@@ -75,16 +89,19 @@ export const generate3DModelData = async (imageBase64: string, mimeType: string)
 
   } catch (error: any) {
     console.error("Gemini AI generation failed:", error);
-    
+
     // Check for quota exhaustion
     const isQuotaError = JSON.stringify(error).includes("429") || (error.message && error.message.includes("429"));
+    const isMissingKey = error.message && error.message.includes("API Key is not configured");
 
     // Fallback if AI fails
     return {
       title: "New Product",
-      description: isQuotaError 
-        ? "AI Quota Exceeded. Please enter product details manually." 
-        : "Automated description unavailable. Please enter details manually.",
+      description: isQuotaError
+        ? "AI Quota Exceeded. Please enter product details manually."
+        : isMissingKey
+          ? "AI Configuration Missing. Please set GEMINI_API_KEY in environment variables."
+          : "Automated description unavailable. Please enter details manually.",
       category: "General",
       estimatedPrice: 0,
       shape: "box",
